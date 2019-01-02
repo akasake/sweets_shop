@@ -1,0 +1,6 @@
+sweets_shop_settings_form.form:
+  path: '/admin/config/user-interface/sweets_shop/settings'
+  defaults:
+    _form: 'Drupal\sweets_shop\Form\SettingsForm'
+  requirements:
+    _permission: 'access content'

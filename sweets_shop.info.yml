@@ -1,0 +1,5 @@
+type: module
+name: sweets_shop
+description: "Module for a sweets shop selling waffles and icecream"
+package: Sweets Shop
+core: 8.x

@@ -1,0 +1,14 @@
+<?php
+
+function sweets_shop_theme($existing, $type, $theme, $path) {
+  return [
+    'sweets_shop' => [
+      'variables' => [
+        'iceceam_nr' => '', 
+        'icecream_count' => 0, 
+        'waffles_nr' => '',  
+        'waffles_count' => 0,
+      ],
+    ],
+  ];
+}

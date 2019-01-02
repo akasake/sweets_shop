@@ -1,0 +1,6 @@
+form_settings:
+  title: 'sweets shop settings'
+  weight: -10
+  parent: system.admin_config_ui
+  route_name: sweets_shop_settings_form.form
+  menu_name: 'Sweets shop settings'
