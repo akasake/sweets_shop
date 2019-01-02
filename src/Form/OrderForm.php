@@ -81,14 +81,33 @@ class OrderForm extends FormBase {
   }
   
   public function submitForm(array &$form, FormStateInterface $form_state) {
-      // saving the data
+      
       if($form_state->getValue('order')==='icecream'){
           // if order is icecream
+          // saving the data
         $result = \Drupal::database()->insert('sweets_shop_icecream_data')->fields([
             'flavor' => $form_state->getValue('icecream_flavor'),
             'made' => 0,
         ])->execute();
-        \Drupal::messenger()->addStatus('Your icecream order has been saved.');
+        
+
+          // saving the counter 
+          $icecream_count= \Drupal::state()->get('icecream_count');
+          $icecream_nr= \Drupal::state()->get('icecream_nr');
+          if($icecream_count<$icecream_nr){
+              // icecream counter did not reach min yet
+            \Drupal::state()->set('icecream_count', $icecream_count+1);
+            ksm(\Drupal::state()->get('icecream_count'));
+            \Drupal::messenger()->addStatus('Your icecream order has been saved. You need to order more icecream');
+          }elseif($icecream_count>=$icecream_nr){
+              // icecream counter reached min
+            \Drupal::state()->set('icecream_count', 0);
+            ksm(\Drupal::state()->get('icecream_count'));
+            \Drupal::messenger()->addStatus('Your icecream order has been saved. The minimum icecream number has been reached');
+          }
+          
+
+        
       }elseif($form_state->getValue('order')==='waffles'){
           // if order is waffles
         $listOfToppings = $form_state->getValue('waffles_toppings');
@@ -96,7 +115,7 @@ class OrderForm extends FormBase {
         $sprinkles = 0;
         $fudge = 0;
         $syrup = 0;
-        ksm($listOfToppings);
+        //ksm($listOfToppings);
         foreach ($listOfToppings as $key => $topping){
             if($topping === 'whippedcream'){
                 $whippedcream = 1;
@@ -116,6 +135,21 @@ class OrderForm extends FormBase {
             'made' => 0,
         ])->execute();
         \Drupal::messenger()->addStatus('Your waffles order has been saved.');
+
+        // saving the counter 
+        $waffles_count= \Drupal::state()->get('waffles_count');
+        $waffles_nr= \Drupal::state()->get('waffles_nr');
+        if($waffles_count<$waffles_nr){
+            // waffles counter did not reach min yet
+          \Drupal::state()->set('waffles_count', $waffles_count+1);
+          ksm(\Drupal::state()->get('waffles_count'));
+          \Drupal::messenger()->addStatus('Your waffles order has been saved. You need to order more waffles');
+        }elseif($waffles_count>=$waffles_nr){
+            // waffles counter reached min
+          \Drupal::state()->set('waffles_count', 0);
+          ksm(\Drupal::state()->get('waffles_count'));
+          \Drupal::messenger()->addStatus('Your waffles order has been saved. The minimum waffles number has been reached');
+        }
       }
     
   }
