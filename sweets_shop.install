@@ -1,6 +1,6 @@
 <?php
 
-    function sweets_shop_icecream_schema(){
+    function sweets_shop_schema(){
         $schema['sweets_shop_icecream_data'] = [
             'fields' => [
                 'id' => [
@@ -24,13 +24,7 @@
             ],
             'primary key' => ['id']
         ];
-       
-
-        return $schema;
-    };
-
-    function sweets_shop_waffles_schema(){
-         $schema['sweets_shop_waffles_data'] = [
+        $schema['sweets_shop_waffles_data'] = [
             'fields' => [
                 'id' => [
                     'description' => '',
@@ -73,14 +67,8 @@
     };
 
 
-    function sweets_shop_update_8001(&$sandbox){
-        $icecreamData = sweets_shop_icecream_schema();
-
-        \Drupal::database()->schema()->createTable('sweets_shop_icecream_data', $icecreamData['sweets_shop_icecream_data']);
-    };
-
-    function sweets_shop_update_8002(&$sandbox){
-        $wafflesData = sweets_shop_waffles_schema();
-
-        \Drupal::database()->schema()->createTable('sweets_shop_waffles_data', $wafflesData['sweets_shop_waffles_data']);
+    function sweets_shop_update_8009(&$sandbox){
+        $sweetsShopData = sweets_shop_schema();
+        \Drupal::database()->schema()->createTable('sweets_shop_icecream_data', $sweetsShopData['sweets_shop_icecream_data']);
+        \Drupal::database()->schema()->createTable('sweets_shop_waffles_data', $sweetsShopData['sweets_shop_waffles_data']);
     };
