@@ -94,12 +94,13 @@ class OrderForm extends FormBase {
           // saving the counter 
           $icecream_count= \Drupal::state()->get('icecream_count');
           $icecream_nr= \Drupal::state()->get('icecream_nr');
-          if($icecream_count<$icecream_nr){
+          if($icecream_count<$icecream_nr-1){
               // icecream counter did not reach min yet
             \Drupal::state()->set('icecream_count', $icecream_count+1);
+            $until = $icecream_nr - \Drupal::state()->get('icecream_count');
             ksm(\Drupal::state()->get('icecream_count'));
-            \Drupal::messenger()->addStatus('Your icecream order has been saved. You need to order more icecream');
-          }elseif($icecream_count>=$icecream_nr){
+            \Drupal::messenger()->addStatus('Your icecream order has been saved. You need to order '.$until.' more icecream');
+          }elseif($icecream_count>=$icecream_nr-1){
               // icecream counter reached min
             \Drupal::state()->set('icecream_count', 0);
             ksm(\Drupal::state()->get('icecream_count'));
@@ -139,12 +140,12 @@ class OrderForm extends FormBase {
         // saving the counter 
         $waffles_count= \Drupal::state()->get('waffles_count');
         $waffles_nr= \Drupal::state()->get('waffles_nr');
-        if($waffles_count<$waffles_nr){
+        if($waffles_count<$waffles_nr-1){
             // waffles counter did not reach min yet
           \Drupal::state()->set('waffles_count', $waffles_count+1);
           ksm(\Drupal::state()->get('waffles_count'));
           \Drupal::messenger()->addStatus('Your waffles order has been saved. You need to order more waffles');
-        }elseif($waffles_count>=$waffles_nr){
+        }elseif($waffles_count>=$waffles_nr-1){
             // waffles counter reached min
           \Drupal::state()->set('waffles_count', 0);
           ksm(\Drupal::state()->get('waffles_count'));
