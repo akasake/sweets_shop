@@ -4,6 +4,9 @@ namespace Drupal\sweets_shop\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Database\Connection;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 
 class OrderForm extends FormBase {
@@ -43,9 +46,12 @@ class OrderForm extends FormBase {
                 ),
             ),
         ),
+        '#empty_value' => 'vanilla',
+        '#empty_option' => 'vanilla',
+
     ];
 
-    $form['waffle_toppings'] = [
+    $form['waffles_toppings'] = [
         '#type' => 'checkboxes',
         '#title' => 'Choose your waffle toppings',
         '#options' =>[
@@ -73,10 +79,45 @@ class OrderForm extends FormBase {
   }
   
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    \Drupal::state()->set('order',  $form_state->getValue('order'));
-    \Drupal::state()->set('icecream_flavor',  $form_state->getValue('icecream_flavor'));
-    \Drupal::state()->set('waffle_toppings',  $form_state->getValue('waffle_toppings'));
-    \Drupal::messenger()->addStatus('Your order has been saved. Please wait while we prepare your order.');
+      // saving the data
+      if($form_state->getValue('order')=='icecream'){
+          // if order is icecream
+        $flavor = $form['flavor']['#value'];
+        $result = \Drupal::database()->insert('sweets_shop_icecream_data')->fields([
+            'flavor' => $form['flavor']['#value'],
+            'made' => 0,
+        ])->execute();
+        \Drupal::messenger()->addStatus('Your icecream order has been saved.');
+      }elseif($form_state->getValue('order')=='waffles'){
+          // if order is waffles
+        $toppingValues = $form_state->getValue('waffles_topping');
+        $listOfToppings = array_filter($toppingValues);
+        $whippedcream = 0;
+        $sprinkles = 0;
+        $fudge = 0;
+        $syrup = 0;
+        if(in_array('whippedcream', $listOfToppings)){
+            $whippedcream = 1;
+        }
+        if(in_array('sprinkles', $listOfToppings)){
+            $sprinkles = 1;
+        }
+        if(in_array('fudge', $listOfToppings)){
+            $fudge = 1;
+        }
+        if(in_array('syrup', $listOfToppings)){
+            $syrup = 1;
+        }
+        $result = \Drupal::database()->insert('sweets_shop_waffles_data')->fields([
+            'whippedcream' => $whippedcream,
+            'sprinkles' => $sprinkles,
+            'fudge' => $fudge,
+            'syrup' => $syrup,
+            'made' => 0,
+        ])->execute();
+        \Drupal::messenger()->addStatus('Your waffles order has been saved.');
+      }
+    
   }
 
 }
