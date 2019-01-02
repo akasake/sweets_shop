@@ -25,7 +25,9 @@ class OrderForm extends FormBase {
         '#options' => [
             'icecream' => $this->t('icecream'),
             'waffles' => $this->t('waffles'),
-        ]
+        ],
+        '#empty_value' => 'icecream',
+        '#empty_option' => 'icecream',
 
     ];
 
@@ -41,7 +43,7 @@ class OrderForm extends FormBase {
         '#states' => array(
             //only show when icecream is chosen
             'visible' => array(
-                ':select[name="order"]' => array(
+                ':input[name="order"]' => array(
                     'value' => 'icecream',
                 ),
             ),
@@ -63,7 +65,7 @@ class OrderForm extends FormBase {
         '#states' => array(
             //only show when waffle is chosen
             'visible' => array(
-                ':select[name="order"]' => array(
+                ':input[name="order"]' => array(
                     'option' => 'waffles',
                 ),
             ),
@@ -80,15 +82,14 @@ class OrderForm extends FormBase {
   
   public function submitForm(array &$form, FormStateInterface $form_state) {
       // saving the data
-      if($form_state->getValue('order')=='icecream'){
+      if($form_state->getValue('order')==='icecream'){
           // if order is icecream
-        $flavor = $form['flavor']['#value'];
         $result = \Drupal::database()->insert('sweets_shop_icecream_data')->fields([
-            'flavor' => $form['flavor']['#value'],
+            'flavor' => $form_state->getValue('icecream_flavor'),
             'made' => 0,
         ])->execute();
         \Drupal::messenger()->addStatus('Your icecream order has been saved.');
-      }elseif($form_state->getValue('order')=='waffles'){
+      }elseif($form_state->getValue('order')==='waffles'){
           // if order is waffles
         $toppingValues = $form_state->getValue('waffles_topping');
         $listOfToppings = array_filter($toppingValues);
