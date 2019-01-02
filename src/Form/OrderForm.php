@@ -38,7 +38,7 @@ class OrderForm extends FormBase {
             'vanilla' => $this->t('vanilla'),
             'strawberry' => $this->t('strawberry'),
             'chocolate' => $this->t('chocolate'),
-            'mokka' => $this->t('mokka'),
+            'mokka' => $this->t('mokka')
         ],
         '#states' => array(
             //only show when icecream is chosen
@@ -49,7 +49,7 @@ class OrderForm extends FormBase {
             ),
         ),
         '#empty_value' => 'vanilla',
-        '#empty_option' => 'vanilla',
+        '#empty_option' => 'vanilla'
 
     ];
 
@@ -60,16 +60,16 @@ class OrderForm extends FormBase {
             'whippedcream' => $this->t('whippedcream'),
             'sprinkles' => $this->t('sprinkles'),
             'fudge' => $this->t('fudge'),
-            'syrup' => $this->t('syrup'),
+            'syrup' => $this->t('syrup')
         ],
         '#states' => array(
-            //only show when waffle is chosen
+            //only show when waffles is chosen
             'visible' => array(
                 ':input[name="order"]' => array(
-                    'option' => 'waffles',
+                    'value' => 'waffles',
                 ),
             ),
-        ),
+        )
     ];
 
     $form['submit'] = [
@@ -91,23 +91,22 @@ class OrderForm extends FormBase {
         \Drupal::messenger()->addStatus('Your icecream order has been saved.');
       }elseif($form_state->getValue('order')==='waffles'){
           // if order is waffles
-        $toppingValues = $form_state->getValue('waffles_topping');
-        $listOfToppings = array_filter($toppingValues);
+        $listOfToppings = $form_state->getValue('waffles_toppings');
         $whippedcream = 0;
         $sprinkles = 0;
         $fudge = 0;
         $syrup = 0;
-        if(in_array('whippedcream', $listOfToppings)){
-            $whippedcream = 1;
-        }
-        if(in_array('sprinkles', $listOfToppings)){
-            $sprinkles = 1;
-        }
-        if(in_array('fudge', $listOfToppings)){
-            $fudge = 1;
-        }
-        if(in_array('syrup', $listOfToppings)){
-            $syrup = 1;
+        ksm($listOfToppings);
+        foreach ($listOfToppings as $key => $topping){
+            if($topping === 'whippedcream'){
+                $whippedcream = 1;
+            }elseif($topping === 'sprinkles'){
+                $sprinkles = 1;
+            }elseif($topping === 'fudge'){
+                $fudge = 1;
+            }elseif($topping === 'syrup'){
+                $syrup = 1;
+            }
         }
         $result = \Drupal::database()->insert('sweets_shop_waffles_data')->fields([
             'whippedcream' => $whippedcream,
