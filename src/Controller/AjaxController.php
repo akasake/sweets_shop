@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\thomas_more_social_media\Controller;
+namespace Drupal\sweets_shop\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Database\Connection;
@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 
 class AjaxController extends ControllerBase{
-    public function counter(Request $request){
+    public function make_order(Request $request){
 
         try{
             $sweet = $request->get('sweet');
