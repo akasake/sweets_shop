@@ -4,3 +4,10 @@ sweets_shop_settings_form.form:
     _form: 'Drupal\sweets_shop\Form\SettingsForm'
   requirements:
     _permission: 'access content'
+    
+sweets_shop_ajax.controller:
+  path: '/ajax/sweets_shop/make_order'
+  defaults:
+    _controller: '\Drupal\sweets_shop\Controller\AjaxController::make_order'
+  requirements:
+    _permission: 'access content'

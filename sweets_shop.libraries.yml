@@ -1,0 +1,7 @@
+sweets_shop:
+  version: VERSION
+  css:
+    component:
+      assets/css/sweets_shop.css: {}
+  js:
+    assets/js/sweets_shop.js: {}
