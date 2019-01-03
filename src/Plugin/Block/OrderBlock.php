@@ -4,6 +4,9 @@ namespace Drupal\sweets_shop\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Form\FormBase;
+use Drupal\Core\Form\FormStateInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Provides a 'Order' Block.
@@ -21,6 +24,28 @@ class OrderBlock extends BlockBase {
    */
   public function build() {
     $form = \Drupal::formBuilder()->getForm('\Drupal\sweets_shop\Form\OrderForm');
-    return $form;
+    $icecreamOrders = $this->getAllUnmadeOrders('icecream');
+    $wafflesOrders = $this->getAllUnmadeOrders('waffles');
+    return [
+      '#theme'=>'sweets_shop',
+      '#form' => $form,
+      '#waffles_orders' => $wafflesOrders,
+      '#icecream_orders' => $icecreamOrders,
+      '#attached' => array(
+        'library' => array(
+          'sweets_shop/sweets_shop',
+        )
+      )
+    ];
+  }
+
+  public function getAllUnmadeOrders($type){
+    if($type.'_counter' === 0){
+      $select = \Drupal::database()->select('sweets_shop_'.$type.'_data');
+      $select->condition('made', 0);
+      $result = $select->countQuery()->execute()->fetchField();
+      return $result;
+    }
+ 
   }
 }

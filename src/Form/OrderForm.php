@@ -15,7 +15,7 @@ class OrderForm extends FormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return ' ';
+    return 'sweets_shop_order_form';
   }
 
   public function buildForm(array $form, FormStateInterface $form_state) {
