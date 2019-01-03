@@ -9,8 +9,8 @@
                     sweet: sweet
                 },
                 url: "/ajax/sweets_shop/make_order",
-                success: function(resp) {
-                    $('.'+sweet+'-order-list').after(`<p>${resp}</p>`);
+                success: function(res) {
+                    $('.'+sweet+'-order-list').after(`<p>${res}</p>`);
                     $('orders-list').remove();
                     $('.'+sweet+'-order-btn').remove();
                 },
