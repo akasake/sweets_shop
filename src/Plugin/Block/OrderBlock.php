@@ -24,7 +24,7 @@ class OrderBlock extends BlockBase {
    */
   public function build() {
     $form = \Drupal::formBuilder()->getForm('\Drupal\sweets_shop\Form\OrderForm');
-    
+    /*
     $icecreamOrders = $this->getAllUnmadeOrders('icecream');
     $wafflesOrders = $this->getAllUnmadeOrders('waffles');
     return [
@@ -37,10 +37,10 @@ class OrderBlock extends BlockBase {
           'sweets_shop/sweets_shop',
         )
       )
-    ];
-    //return $form;
+    ];*/
+    return $form;
   }
-
+/*
   public function getAllUnmadeOrders($type){
     if($type.'_counter' === $type.'_nr'){
       \Drupal::state()->set($type.'_count', 0);
@@ -49,6 +49,5 @@ class OrderBlock extends BlockBase {
       $result = $select->execute()->fetchAll();
       return $result;
     }
- 
-  }
+  }*/
 }

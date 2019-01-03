@@ -93,17 +93,30 @@ class OrderForm extends FormBase {
           // saving the counter 
           $icecream_count= \Drupal::state()->get('icecream_count');
           $icecream_nr= \Drupal::state()->get('icecream_nr');
-          if($icecream_count<$icecream_nr-1){
-              // icecream counter did not reach min yet
-            \Drupal::state()->set('icecream_count', $icecream_count+1);
-            $until = $icecream_nr - \Drupal::state()->get('icecream_count');
-            //ksm(\Drupal::state()->get('icecream_count'));
+          \Drupal::state()->set('icecream_count', $icecream_count+1);
+          $icecream_count= \Drupal::state()->get('icecream_count');         
+          if($icecream_count<$icecream_nr){
+                // icecream counter did not reach min yet
+                $until = $icecream_nr - \Drupal::state()->get('icecream_count');
+                //ksm(\Drupal::state()->get('icecream_count'));
             \Drupal::messenger()->addStatus('Your icecream order has been saved. You need to order '.$until.' more icecream');
-          }elseif($icecream_count>=$icecream_nr-1){
-              // icecream counter reached min
-              \Drupal::state()->set('icecream_count', $icecream_count+1);
-            //ksm(\Drupal::state()->get('icecream_count'));
-            \Drupal::messenger()->addStatus('Your icecream order has been saved. The minimum icecream number has been reached');
+          }elseif($icecream_count>=$icecream_nr){
+                // icecream counter reached min
+                \Drupal::messenger()->addStatus('You have reached the minimum amount of orders.');
+                $allOrders = $this->getAllUnmadeOrders('icecream');
+                $counter =0;
+                foreach($allOrders as $o){    
+                    $flavor = $o->flavor;
+                    $counter++;
+                    \Drupal::messenger()->addStatus('Order '.$counter.': icecream with '.$flavor.' flavor.');
+                }
+                //resetting
+                \Drupal::database()->update('sweets_shop_icecream_data')->fields([
+                    'made' => 1,
+                ])->condition('made', 0, '=')->execute();
+                \Drupal::state()->set('icecream_count', 0);
+                //ksm(\Drupal::state()->get('icecream_count'));
+                \Drupal::messenger()->addStatus('Your icecream orders are now being made.');
           }
           
 
@@ -127,31 +140,70 @@ class OrderForm extends FormBase {
                 $syrup = 1;
             }
         }
-        $result = \Drupal::database()->insert('sweets_shop_waffles_data')->fields([
+        \Drupal::database()->insert('sweets_shop_waffles_data')->fields([
             'whippedcream' => $whippedcream,
             'sprinkles' => $sprinkles,
             'fudge' => $fudge,
             'syrup' => $syrup,
             'made' => 0,
         ])->execute();
-        \Drupal::messenger()->addStatus('Your waffles order has been saved.');
 
         // saving the counter 
         $waffles_count= \Drupal::state()->get('waffles_count');
         $waffles_nr= \Drupal::state()->get('waffles_nr');
-        if($waffles_count<$waffles_nr-1){
+        \Drupal::state()->set('waffles_count', $waffles_count+1);
+        $waffles_count= \Drupal::state()->get('waffles_count');
+        if($waffles_count<$waffles_nr){
             // waffles counter did not reach min yet
-          \Drupal::state()->set('waffles_count', $waffles_count+1);
-          //ksm(\Drupal::state()->get('waffles_count'));
-          \Drupal::messenger()->addStatus('Your waffles order has been saved. You need to order more waffles');
-        }elseif($waffles_count>=$waffles_nr-1){
+            
+            $until = $waffles_nr - \Drupal::state()->get('waffles_count');
+            \Drupal::messenger()->addStatus('Your waffles order has been saved. You need to order '.$until.' more waffles');
+        }elseif($waffles_count>=$waffles_nr){
             // waffles counter reached min
-          \Drupal::state()->set('waffles_count', $waffles_count+1);
-          //ksm(\Drupal::state()->get('waffles_count'));
-          \Drupal::messenger()->addStatus('Your waffles order has been saved. The minimum waffles number has been reached');
+            //showing orders in message
+            $allWaffles = $this->getAllUnmadeOrders('waffles');
+            //ksm($allWaffles);
+            $counter = 0;
+            foreach($allWaffles as $o){
+                $whippedcream = '';
+                $sprinkles = '';
+                $fudge = '';
+                $syrup = '';
+                $counter++;
+                if($o->whippedcream === '1'){
+                    $whippedcream = ' with whippedcream';
+                }
+                if($o->sprinkles === '1'){
+                    $sprinkles = ' with sprinkles';
+                }
+                if($o->fudge === '1'){
+                    $fudge = ' with fudge';
+                }
+                if($o->syrup === '1'){
+                    $syrup = ' with syrup';
+                }
+                \Drupal::messenger()->addStatus('Order '.$counter.': waffles'.$whippedcream.$sprinkles.$fudge.$syrup);
+            }
+            //resetting
+            \Drupal::database()->update('sweets_shop_waffles_data')->fields(['made' => 1,])->condition('made', 0, '=')->execute();
+            \Drupal::state()->set('waffles_count', 0);
+            //ksm(\Drupal::state()->get('waffles_count'));
+            \Drupal::messenger()->addStatus('Your waffles order has been saved and will be made soon.');
         }
       }
     
+  }
+
+  public function getAllUnmadeOrders($type){
+    \Drupal::state()->set($type.'_count', 0);
+    if($type === 'icecream'){
+        $query = \Drupal::database()->query("SELECT flavor FROM {sweets_shop_icecream_data} WHERE made = 0");
+        $result = $query->fetchAll();
+    }elseif($type === 'waffles'){
+        $query = \Drupal::database()->query("SELECT * FROM {sweets_shop_waffles_data} WHERE made = 0");
+        $result = $query->fetchAll();
+    } 
+    return $result;
   }
 
 }

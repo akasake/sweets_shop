@@ -1,4 +1,6 @@
 <div class="sweets-shop">
+
+    {{form}}
     <div class="order">
         {% if icecream_orders is iterable %}
             <ul class="orders-list">
@@ -6,7 +8,7 @@
                 <li>1 Icecream with {{ i.flavor }} flavor</li>
             {% endfor %}
             </ul>
-            <a href="#" class="icecream-order-btn" data-sweet="icecream">Order</a>
+            <a href="#" class="icecream-order-btn" data-sweet="icecream">Make Order</a>
         {% endif %}
 
         {% if waffles_orders is iterable %}
@@ -26,8 +28,8 @@
                 <td>{{w.syrup}}</td>
             {% endfor %}
             </tr>
-            <a href="#" class="waffles-order-btn" data-sweet="waffles">Order</a>
+            <a href="#" class="waffles-order-btn" data-sweet="waffles">Make Order</a>
         {% endif %}
     </div>
-    {{ form }}
+
 </div>
